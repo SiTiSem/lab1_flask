@@ -82,6 +82,3 @@ def hello():
             'modify_plotname': modify_plotname
         }
     return render_template('simple.html',form=form,files_info=files_info) 
-
-if __name__ == "__main__":
-    app.run(host='127.0.0.1',port=5000)
