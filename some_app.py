@@ -17,7 +17,7 @@ bootstrap = Bootstrap(app)
 
 SECRET_KEY = 'qYlBLlrwjCYFO3LglAxdDSceH36pfYTb'
 app.config['SECRET_KEY'] = SECRET_KEY
-app.config['RECAPTCHA_USE_SSL'] = False
+app.config['RECAPTCHA_USE_SSL'] = True
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6LdJKfgcAAAAAF0MiTTxDxbgA6oh_f6HekM4geWO'
 app.config['RECAPTCHA_PRIVATE_KEY'] = '6LdJKfgcAAAAALDdMV696Jsm2ZqtaM0jAkpqKOhI'
 app.config['RECAPTCHA_OPTIONS'] = {'theme': 'white'}
@@ -25,17 +25,17 @@ app.config['RECAPTCHA_OPTIONS'] = {'theme': 'white'}
 class NetForm(FlaskForm):
     scale = FloatField('Масштаб', validators = [DataRequired()])
     upload = FileField('Файл загрузки', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'jpeg'], 'Только изображение!')])
-    # recaptcha = RecaptchaField()
+    recaptcha = RecaptchaField()
     submit = SubmitField('Отправить')
 
 @app.route("/", methods=['GET', 'POST'])
 def hello():
     form = NetForm()
-    filename=None
-    filename_modifi=None
+    image_string=None
+    origin_platname_string=None
     rgb=None
-    origin_platname=None
-    modify_plotname=None
+    image_modifi_string=None
+    modifi_platname_string=None
     files_info=None
 
     if form.validate_on_submit():
