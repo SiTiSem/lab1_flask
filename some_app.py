@@ -10,7 +10,6 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 from flask_bootstrap import Bootstrap
 from PIL import Image
 from matplotlib import pyplot as plt
-from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -23,7 +22,7 @@ app.config['RECAPTCHA_PRIVATE_KEY'] = '6LdJKfgcAAAAALDdMV696Jsm2ZqtaM0jAkpqKOhI'
 app.config['RECAPTCHA_OPTIONS'] = {'theme': 'white'}
 
 class NetForm(FlaskForm):
-    scale = FloatField('Масштаб', validators = [DataRequired()])
+    scale = FloatField('Масштаб (Множитель: 1.0 - исходный масштаб, <1.0 - уменьшить, >1.0 - увеличить изображение)', validators = [DataRequired()])
     upload = FileField('Файл загрузки', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'jpeg'], 'Только изображение!')])
     recaptcha = RecaptchaField()
     submit = SubmitField('Отправить')

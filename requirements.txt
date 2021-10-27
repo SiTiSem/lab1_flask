@@ -5,5 +5,4 @@ Flask-Bootstrap == 3.3.7.1
 Flask-WTF == 0.15.1
 Pillow == 8.4.0
 matplotlib == 3.4.3
-Werkzeug == 2.0.2
 WTForms == 2.3.3
