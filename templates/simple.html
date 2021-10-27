@@ -1,0 +1,36 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+<!-- задаем заголовок страницы -->
+{% block title %}This is an page{% endblock %}
+<!-- блок body -->
+{% block content %}
+<div class="container">
+    <h2>Форма отправки изображения</h2>
+    {{ wtf.quick_form(form, method='post',enctype="multipart/form-data", action="") }}
+    <hr>
+    {% if files_info.filename_origin %}
+    <h2>Исходное изображение</h2>
+    <p>Путь к файлу: {{files_info.filename_origin}}</p>
+    <p>Размер изображения: {{files_info.origin_size}}</p>
+    <p><img src={{files_info.filename_origin}} style="max-width: 100%;" /></p>
+
+    {% if files_info.origin_platname %}
+    <h3>Графики распределения цветов исходного изображения</h3>
+    <p><img src={{files_info.origin_platname}} /></p>
+    {% endif %}
+
+    {% if files_info.filename_modifi %}
+    <h2>Измененное изображение</h2>
+    <p>Путь к файлу: {{files_info.filename_modifi}}
+    <p>Размер изображения: {{files_info.modifi_size}}</p>
+    <p><img src={{files_info.filename_modifi}} style="max-width: 100%;" /></p>
+    {% endif %}
+
+    {% if files_info.modify_plotname %}
+    <h3>Графики распределения цветов измененного изображения</h3>
+    <p><img src={{files_info.modify_plotname}} /></p>
+    {% endif %}
+
+    {% endif %}
+ </div>
+{% endblock %} 
