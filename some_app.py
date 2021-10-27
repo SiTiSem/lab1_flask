@@ -1,4 +1,6 @@
 import os
+from io import BytesIO
+import base64
 from flask import Flask
 from flask import render_template
 from flask_wtf import FlaskForm,RecaptchaField
@@ -23,7 +25,7 @@ app.config['RECAPTCHA_OPTIONS'] = {'theme': 'white'}
 class NetForm(FlaskForm):
     scale = FloatField('Масштаб', validators = [DataRequired()])
     upload = FileField('Файл загрузки', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'jpeg'], 'Только изображение!')])
-    recaptcha = RecaptchaField()
+    # recaptcha = RecaptchaField()
     submit = SubmitField('Отправить')
 
 @app.route("/", methods=['GET', 'POST'])
@@ -37,17 +39,19 @@ def hello():
     files_info=None
 
     if form.validate_on_submit():
-        dir_name = './static'
-        ext_file = secure_filename(os.path.splitext(form.upload.data.filename)[1])
-        filename = dir_name + '/originImg.'+ext_file
-        form.upload.data.save(filename)
-        image = Image.open(filename)
+        image = Image.open(BytesIO(form.upload.data.read()))
+        buffered = BytesIO()
+        image.save(buffered, format="JPEG")
+        image_string = base64.b64encode(buffered.getvalue())
+        image_string = image_string.decode('utf-8')
         width, height = image.size
         scale = form.scale.data
         width_modifi, height_modifi = int(width*scale), int(height*scale)
         image_modifi = image.resize((width_modifi, height_modifi))
-        filename_modifi = dir_name+'/modifiImg.'+ext_file
-        image_modifi.save(filename_modifi)
+        buffered_modifi = BytesIO()
+        image_modifi.save(buffered_modifi, format="JPEG")
+        image_modifi_string = base64.b64encode(buffered_modifi.getvalue())
+        image_modifi_string = image_modifi_string.decode('utf-8')
 
         fig1, ax1 = plt.subplots()
         rgb = image.split()
@@ -58,8 +62,10 @@ def hello():
         ax1.plot(x, ry, color='r')
         ax1.plot(x, gy, color='g')
         ax1.plot(x, by, color='b')
-        origin_platname = dir_name+'/originPlot.jpg'
-        fig1.savefig(origin_platname)
+        buffered_origin_platname = BytesIO()
+        fig1.savefig(buffered_origin_platname, format="JPEG")
+        origin_platname_string = base64.b64encode(buffered_origin_platname.getvalue())
+        origin_platname_string = origin_platname_string.decode('utf-8')
 
         fig2, ax2 = plt.subplots()
         rgb = image_modifi.split()
@@ -70,15 +76,17 @@ def hello():
         ax2.plot(x, ry, color='r')
         ax2.plot(x, gy, color='g')
         ax2.plot(x, by, color='b')
-        modify_plotname = dir_name+'/modifyPlot.jpg'
-        fig2.savefig(modify_plotname)
+        buffered_modifi_platname = BytesIO()
+        fig2.savefig(buffered_modifi_platname, format="JPEG")
+        modifi_platname_string = base64.b64encode(buffered_modifi_platname.getvalue())
+        modifi_platname_string = modifi_platname_string.decode('utf-8')
 
         files_info = {
-            'filename_origin': filename,
+            'filename_origin': image_string,
             'origin_size': f"{width}x{height}",
-            'origin_platname': origin_platname,
-            'filename_modifi': filename_modifi,
+            'origin_platname': origin_platname_string,
+            'filename_modifi': image_modifi_string,
             'modifi_size': f"{width_modifi}x{height_modifi}",
-            'modify_plotname': modify_plotname
+            'modify_plotname': modifi_platname_string
         }
     return render_template('simple.html',form=form,files_info=files_info) 
