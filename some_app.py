@@ -34,6 +34,7 @@ def hello():
     rgb=None
     origin_platname=None
     modify_plotname=None
+    files_info=None
 
     if form.validate_on_submit():
         dir_name = './static'
