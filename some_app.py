@@ -1,6 +1,5 @@
-import os
-from io import BytesIO
 import base64
+from io import BytesIO
 from flask import Flask
 from flask import render_template
 from flask_wtf import FlaskForm,RecaptchaField
