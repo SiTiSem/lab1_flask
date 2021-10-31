@@ -3,7 +3,7 @@ from io import BytesIO
 from flask import Flask
 from flask import render_template
 from flask_wtf import FlaskForm,RecaptchaField
-from wtforms import SubmitField, FloatField
+from wtforms import SubmitField, FloatField, SelectField
 from wtforms.validators import DataRequired
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from flask_bootstrap import Bootstrap
@@ -21,8 +21,10 @@ app.config['RECAPTCHA_PRIVATE_KEY'] = '6LdJKfgcAAAAALDdMV696Jsm2ZqtaM0jAkpqKOhI'
 app.config['RECAPTCHA_OPTIONS'] = {'theme': 'white'}
 
 class NetForm(FlaskForm):
-    scale = FloatField('Масштаб (Множитель: 1.0 - исходный масштаб, <1.0 - уменьшить, >1.0 - увеличить изображение)', validators = [DataRequired()])
+    # scale = FloatField('Масштаб (Множитель: 1.0 - исходный масштаб, <1.0 - уменьшить, >1.0 - увеличить изображение)', validators = [DataRequired()])
     upload = FileField('Файл загрузки', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'jpeg'], 'Только изображение!')])
+    wscale = SelectField('Масштаб по ширине', choices=[(10, '10%'), (20, '20%'), (50, '50%'), (100, '100%'), (150, '150%'), (200, '200%')])
+    hscale = SelectField('Масштаб по высоте', choices=[(10, '10%'), (20, '20%'), (50, '50%'), (100, '100%'), (150, '150%'), (200, '200%')])
     recaptcha = RecaptchaField()
     submit = SubmitField('Отправить')
 
@@ -43,8 +45,9 @@ def hello():
         image_string = base64.b64encode(buffered.getvalue())
         image_string = image_string.decode('utf-8')
         width, height = image.size
-        scale = form.scale.data
-        width_modifi, height_modifi = int(width*scale), int(height*scale)
+        wscale = int(form.wscale.data)
+        hscale = int(form.hscale.data)
+        width_modifi, height_modifi = int(width*(wscale/100)), int(height*(hscale/100))
         image_modifi = image.resize((width_modifi, height_modifi))
         buffered_modifi = BytesIO()
         image_modifi.save(buffered_modifi, format="JPEG")

@@ -9,26 +9,30 @@
     {{ wtf.quick_form(form, method='post',enctype="multipart/form-data", action="") }}
     <hr>
     {% if files_info.filename_origin %}
-    <h2>Исходное изображение</h2>
-    <p>Размер изображения: {{files_info.origin_size}}</p>
-    <p><img src="data:image/jpeg;base64, {{files_info.filename_origin}}" style="max-width: 100%;" /></p>
-
-    {% if files_info.origin_platname %}
-    <h3>Графики распределения цветов исходного изображения</h3>
-    <p><img src="data:image/jpeg;base64, {{files_info.origin_platname}}" /></p>
-    {% endif %}
-
-    {% if files_info.filename_modifi %}
-    <h2>Измененное изображение</h2>
-    <p>Размер изображения: {{files_info.modifi_size}}</p>
-    <p><img src="data:image/jpeg;base64, {{files_info.filename_modifi}}" style="max-width: 100%;" /></p>
-    {% endif %}
-
-    {% if files_info.modify_plotname %}
-    <h3>Графики распределения цветов измененного изображения</h3>
-    <p><img src="data:image/jpeg;base64, {{files_info.modify_plotname}}" /></p>
-    {% endif %}
-
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Изображение</th>
+                <th>Размер</th>
+                <th>График распределения цветов</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Исходное</td>
+                <td><img src="data:image/jpeg;base64, {{files_info.filename_origin}}" style="max-width: 400px;" /></td>
+                <td>{{files_info.origin_size}}</td>
+                <td><img src="data:image/jpeg;base64, {{files_info.origin_platname}}" style="width: 400px; max-width: 100%;" /></td>
+            </tr>
+            <tr>
+                <td>Измененное</td>
+                <td><img src="data:image/jpeg;base64, {{files_info.filename_modifi}}" style="max-width: 400px;" /></td>
+                <td>{{files_info.modifi_size}}</td>
+                <td><img src="data:image/jpeg;base64, {{files_info.modify_plotname}}" style="width: 400px; max-width: 100%;" /></td>
+            </tr>
+        </tbody>
+    </table>
     {% endif %}
  </div>
 {% endblock %} 
